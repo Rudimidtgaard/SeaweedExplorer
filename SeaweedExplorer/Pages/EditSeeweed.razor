@@ -1,0 +1,95 @@
+﻿@page "/Seeweed/edit/{seeweedId:int}"
+@inject IDbContextFactory<SeeweedDbContext> ContectFactory
+@inject NavigationManager NavigationManager
+@inject StateContainer StateContainer;
+
+<PageTitle>Edit Seeweed</PageTitle>
+
+<h1>Edit Seeweed</h1>
+
+@if(Seeweed is null && !IsBusy)
+{
+    <div class="alert alert-danger">Seeweed with Id @SeeweedId was not found.</div>
+}
+else
+{
+    <SeeweedForm Seeweed="@Seeweed"
+        SeeweedClasses="@SeeweedClasses"
+        IsEdit="true"
+        IsBusy="@IsBusy"
+        OnSubmit="@HandleSubmit"
+        OnCancel="@NavigateToOverviewPage"/>
+}
+
+@if(ErrorMessage is not null)
+{
+    <br />
+    <div class="alert alert-danger">@ErrorMessage</div>
+}
+
+@code {
+    [Parameter]
+    public int SeeweedId { get; set; }
+
+    private Seeweed? Seeweed { get; set; }
+    private SeeweedClass[]? SeeweedClasses { get; set; }
+
+    private bool IsBusy { get; set; }
+    private string? ErrorMessage { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        IsBusy = true;
+
+        try
+        {
+            using var context = ContectFactory.CreateDbContext();
+
+            SeeweedClasses = await context.SeeweedClass
+                        .AsNoTracking()
+                        .OrderBy(cla => cla.NameCommon)
+                        .ToArrayAsync();
+
+            Seeweed = await context.Seeweed
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(sw => sw.Id == SeeweedId);
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private async Task HandleSubmit(bool isValid)
+    {
+        if(Seeweed is null || IsBusy || !isValid)
+        {
+            ErrorMessage = null;
+            return;
+        }
+
+        IsBusy = true;
+
+        try
+        {
+            using var context = ContectFactory.CreateDbContext();
+            context.Update(Seeweed);
+            await context.SaveChangesAsync();
+
+            NavigateToOverviewPage();
+        }
+        catch(Exception e)
+        {
+            ErrorMessage = $"Error while saving seeweed. Error message: {e.Message}";
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private void NavigateToOverviewPage()
+    {
+        NavigationManager.NavigateTo($"/seeweed/list/{StateContainer.SeeweedOverviewPage}");
+    }
+}

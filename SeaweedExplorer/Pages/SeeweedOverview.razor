@@ -1,0 +1,107 @@
+﻿@page "/seeweed/list/{currentPage:int?}"
+@inject IDbContextFactory<SeeweedDbContext> ContextFactory;
+@inject NavigationManager NavigationManager;
+@inject StateContainer StateContainer;
+
+<PageTitle>Seeweed</PageTitle>
+
+<h1>Seeweed</h1>
+
+@if (Seeweeds is null)
+{
+    <div>Loading...</div>
+}
+else
+{
+    <ul class="pagination mt-3">
+        <li class="page-item @(CurrentPage == 1 ? "disabled" : "")">
+            <a class="page-link" href="/seeweed/list/@(CurrentPage -1)">Previous</a>
+        </li>
+        @for (int i = 1; i <= TotalPages; i++)
+        {
+            <li class="page-item @(CurrentPage == i ? "active" : "")">
+                <a class="page-link" href="/seeweed/list/@i">@i</a>
+            </li>
+        }
+        <li class="page-item @(CurrentPage == TotalPages ? "disabled" : "")">
+            <a class="page-link" href="/seeweed/list/@(CurrentPage + 1)">Next</a>
+        </li>
+    </ul>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <td>Common name</td>
+                <td>Latin name</td>
+                <td>Is Native</td>
+                <td>Class</td>
+                <td>#</td>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var seeweed in Seeweeds)
+            {
+                <tr>
+                    <td>@seeweed.NameCommon</td>
+                    <td>@seeweed.NameLatin</td>
+                    <td>@seeweed.Native</td>
+                    <td>@seeweed.SeeweedClass?.NameCommon</td>
+                    <td>
+                        <a href="/seeweed/edit/@seeweed.Id"
+                        class="btn btn-outline-primary">
+                        Edit
+                    </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+
+
+@code {
+    [Parameter]
+    public int? CurrentPage { get; set; }
+
+    private Seeweed[]? Seeweeds { get; set; }
+
+    private const int ItemsPerPage = 5;
+
+    private int TotalPages { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (CurrentPage is null or < 1)
+        {
+            NavigationManager.NavigateTo("/seeweed/list/1");
+            return;
+        }
+
+        using var context = ContextFactory.CreateDbContext();
+
+        var seeweedCount = await context.Seeweed.CountAsync();
+        TotalPages = seeweedCount == 0 
+        ? 1
+        : (int) Math.Ceiling((double)seeweedCount / ItemsPerPage);
+
+        if(CurrentPage > TotalPages)
+        {
+            NavigationManager.NavigateTo($"/seeweed/list/{TotalPages}");
+            return;
+        }
+
+        StateContainer.SeeweedOverviewPage = CurrentPage.Value;
+
+        var itemsToSkip = (CurrentPage.Value - 1) * ItemsPerPage;
+
+        Seeweeds = await context.Seeweed
+        .Include(emp => emp.SeeweedClass)
+        .OrderBy(emp => emp.NameCommon)
+        .Skip(itemsToSkip)
+        .Take(ItemsPerPage)
+        .ToArrayAsync();
+    }
+}

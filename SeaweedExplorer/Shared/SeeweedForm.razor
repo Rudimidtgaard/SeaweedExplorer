@@ -1,0 +1,97 @@
+﻿@if (Seeweed is not null)
+{
+    <EditForm Model="@Seeweed" OnValidSubmit="@HandleValidSubmit"
+          OnInvalidSubmit="@HandleInvalidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label for="NameCommon" class="form-label">Common Name</label>
+            <InputText id="NameCommon" class="form-control"
+                   @bind-Value="Seeweed.NameCommon"></InputText>
+            <ValidationMessage For="() => Seeweed.NameCommon" />
+        </div>
+
+        <div class="mb-3">
+            <label for="NameLatin" class="form-label">Latin Name</label>
+            <InputText id="NameLatin" class="form-control"
+                   @bind-Value="Seeweed.NameLatin"></InputText>
+            <ValidationMessage For="() => Seeweed.NameLatin" />
+        </div>
+
+        <div class="mb-3">
+            <label for="class" class="form-label">Class</label>
+            <InputSelect id="class" class="form-select"
+                     @bind-Value="Seeweed.SeeweedClassId">
+                @if (SeeweedClasses is not null)
+                {
+                    @foreach (var seeweedClass in SeeweedClasses)
+                    {
+                        <option value="@seeweedClass.Id">@seeweedClass.NameCommon</option>
+                    }
+
+                }
+            </InputSelect>
+        </div>
+
+        <div class="mb-3">
+            <label for="isNative" class="form-label">Native</label>
+            <InputCheckbox id="isNative" class="form-check-input"
+                       @bind-Value="Seeweed.Native"></InputCheckbox>
+        </div>
+
+        @if(IsEdit)
+        {
+            <button type="submit" class="btn btn-primary" disabled="@IsBusy">Update</button>
+            <button type="button" class="btn btn-secondary"
+            @onclick="HandleCancel" disabled="@IsBusy">Cancel</button>
+        }
+        else
+        {
+            <button type="submit" class="btn btn-primary" disabled="@IsBusy">Add</button>
+        }
+
+        
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public Seeweed? Seeweed { get; set; }
+    [Parameter]
+    public SeeweedClass[]? SeeweedClasses { get; set; }
+    [Parameter]
+    public bool IsBusy { get; set; }
+    [Parameter]
+    public bool IsEdit { get; set; }
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+    [Parameter]
+    public EventCallback<bool> OnSubmit { get; set; }
+
+    private async Task HandleValidSubmit()
+    {
+        if(OnSubmit.HasDelegate)
+        {
+            await OnSubmit.InvokeAsync(true);
+        }
+    }
+
+    private async Task HandleInvalidSubmit()
+    {
+        if (OnSubmit.HasDelegate)
+        {
+            await OnSubmit.InvokeAsync(false);
+        }
+    }
+
+    private async Task HandleCancel()
+    {
+        if(OnCancel.HasDelegate)
+        {
+            await OnCancel.InvokeAsync();
+        }
+    }
+
+
+}
