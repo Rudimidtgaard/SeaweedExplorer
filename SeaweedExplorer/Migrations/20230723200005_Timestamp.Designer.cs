@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SeaweedExplorer.Data;
 
@@ -11,9 +12,11 @@ using SeaweedExplorer.Data;
 namespace SeaweedExplorer.Migrations
 {
     [DbContext(typeof(SeeweedDbContext))]
-    partial class SeeweedDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230723200005_Timestamp")]
+    partial class Timestamp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

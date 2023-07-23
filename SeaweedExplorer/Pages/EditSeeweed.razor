@@ -78,6 +78,10 @@ else
 
             NavigateToOverviewPage();
         }
+        catch(DbUpdateConcurrencyException)
+        {
+            ErrorMessage = "This seeweed was modified by another user. Reload page and try again";
+        }
         catch(Exception e)
         {
             ErrorMessage = $"Error while saving seeweed. Error message: {e.Message}";

@@ -121,10 +121,18 @@ else
 
         if(IsOk)
         {
-            using var context = ContextFactory.CreateDbContext();
 
-            context.Seeweed.Remove(seeweed);
-            await context.SaveChangesAsync();
+            try
+            {
+                using var context = ContextFactory.CreateDbContext();
+
+                context.Seeweed.Remove(seeweed);
+                await context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                // In this case, just continue and reload the data
+            }
 
             await LoadData();
         }

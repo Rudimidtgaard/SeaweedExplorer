@@ -15,5 +15,7 @@ namespace SeaweedExplorer.Data.Models
         [Required]
         public int? SeeweedClassId { get; set; }
         public SeeweedClass? SeeweedClass { get; set; }
+        [Timestamp]
+        public byte[]? Timestamp { get; set; }
     }
 }
