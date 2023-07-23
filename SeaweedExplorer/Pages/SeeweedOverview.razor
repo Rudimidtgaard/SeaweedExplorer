@@ -2,6 +2,7 @@
 @inject IDbContextFactory<SeeweedDbContext> ContextFactory;
 @inject NavigationManager NavigationManager;
 @inject StateContainer StateContainer;
+@inject IJSRuntime JS;
 
 <PageTitle>Seeweed</PageTitle>
 
@@ -47,11 +48,15 @@ else
                     <td>@seeweed.NameLatin</td>
                     <td>@seeweed.Native</td>
                     <td>@seeweed.SeeweedClass?.NameCommon</td>
-                    <td>
+                    <td class="btn-group-sm">
                         <a href="/seeweed/edit/@seeweed.Id"
                         class="btn btn-outline-primary">
                         Edit
-                    </a>
+                        </a>
+                        <button class="btn btn-outline-danger"
+                            @onclick="() => HandleDelete(seeweed)">
+                            Delete
+                        </button>
                     </td>
                 </tr>
             }
@@ -73,6 +78,11 @@ else
     private int TotalPages { get; set; }
 
     protected override async Task OnParametersSetAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
     {
         if (CurrentPage is null or < 1)
         {
@@ -103,5 +113,21 @@ else
         .Skip(itemsToSkip)
         .Take(ItemsPerPage)
         .ToArrayAsync();
+    }
+
+    private async Task HandleDelete(Seeweed seeweed)
+    {
+        var IsOk = await JS.InvokeAsync<bool>("confirm", $"Are you sure you want to delete seeweed: {seeweed.NameCommon}?");
+
+        if(IsOk)
+        {
+            using var context = ContextFactory.CreateDbContext();
+
+            context.Seeweed.Remove(seeweed);
+            await context.SaveChangesAsync();
+
+            await LoadData();
+        }
+
     }
 }
