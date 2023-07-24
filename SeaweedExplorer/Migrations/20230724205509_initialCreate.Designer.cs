@@ -11,9 +11,9 @@ using SeaweedExplorer.Data;
 
 namespace SeaweedExplorer.Migrations
 {
-    [DbContext(typeof(SeeweedDbContext))]
-    [Migration("20230716201024_SeedDatabase")]
-    partial class SeedDatabase
+    [DbContext(typeof(SeaweedDbContext))]
+    [Migration("20230724205509_initialCreate")]
+    partial class initialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace SeaweedExplorer.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("SeaweedExplorer.Data.Models.Seeweed", b =>
+            modelBuilder.Entity("SeaweedExplorer.Data.Models.Seaweed", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -46,15 +46,20 @@ namespace SeaweedExplorer.Migrations
                     b.Property<bool>("Native")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("SeeweedClassId")
+                    b.Property<int?>("SeaweedClassId")
                         .IsRequired()
                         .HasColumnType("int");
 
+                    b.Property<byte[]>("Timestamp")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("SeeweedClassId");
+                    b.HasIndex("SeaweedClassId");
 
-                    b.ToTable("Seeweed");
+                    b.ToTable("Seaweed");
 
                     b.HasData(
                         new
@@ -63,7 +68,7 @@ namespace SeaweedExplorer.Migrations
                             NameCommon = "Tarmrørhinde",
                             NameLatin = "",
                             Native = true,
-                            SeeweedClassId = 3
+                            SeaweedClassId = 3
                         },
                         new
                         {
@@ -71,7 +76,7 @@ namespace SeaweedExplorer.Migrations
                             NameCommon = "Søl",
                             NameLatin = "",
                             Native = true,
-                            SeeweedClassId = 1
+                            SeaweedClassId = 1
                         },
                         new
                         {
@@ -79,7 +84,7 @@ namespace SeaweedExplorer.Migrations
                             NameCommon = "Carrageentang",
                             NameLatin = "",
                             Native = true,
-                            SeeweedClassId = 1
+                            SeaweedClassId = 1
                         },
                         new
                         {
@@ -87,7 +92,7 @@ namespace SeaweedExplorer.Migrations
                             NameCommon = "Gaffeltang",
                             NameLatin = "",
                             Native = true,
-                            SeeweedClassId = 1
+                            SeaweedClassId = 1
                         },
                         new
                         {
@@ -95,7 +100,7 @@ namespace SeaweedExplorer.Migrations
                             NameCommon = "Fingertang",
                             NameLatin = "",
                             Native = true,
-                            SeeweedClassId = 2
+                            SeaweedClassId = 2
                         },
                         new
                         {
@@ -103,7 +108,7 @@ namespace SeaweedExplorer.Migrations
                             NameCommon = "Sukkertang",
                             NameLatin = "",
                             Native = true,
-                            SeeweedClassId = 2
+                            SeaweedClassId = 2
                         },
                         new
                         {
@@ -111,7 +116,7 @@ namespace SeaweedExplorer.Migrations
                             NameCommon = "Blæretang",
                             NameLatin = "",
                             Native = true,
-                            SeeweedClassId = 2
+                            SeaweedClassId = 2
                         },
                         new
                         {
@@ -119,11 +124,11 @@ namespace SeaweedExplorer.Migrations
                             NameCommon = "Savtang",
                             NameLatin = "",
                             Native = true,
-                            SeeweedClassId = 2
+                            SeaweedClassId = 2
                         });
                 });
 
-            modelBuilder.Entity("SeaweedExplorer.Data.Models.SeeweedClass", b =>
+            modelBuilder.Entity("SeaweedExplorer.Data.Models.SeaweedClass", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -143,7 +148,7 @@ namespace SeaweedExplorer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SeeweedClass");
+                    b.ToTable("SeaweedClass");
 
                     b.HasData(
                         new
@@ -166,20 +171,20 @@ namespace SeaweedExplorer.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SeaweedExplorer.Data.Models.Seeweed", b =>
+            modelBuilder.Entity("SeaweedExplorer.Data.Models.Seaweed", b =>
                 {
-                    b.HasOne("SeaweedExplorer.Data.Models.SeeweedClass", "SeeweedClass")
-                        .WithMany("Seeweeds")
-                        .HasForeignKey("SeeweedClassId")
+                    b.HasOne("SeaweedExplorer.Data.Models.SeaweedClass", "SeaweedClass")
+                        .WithMany("Seaweeds")
+                        .HasForeignKey("SeaweedClassId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("SeeweedClass");
+                    b.Navigation("SeaweedClass");
                 });
 
-            modelBuilder.Entity("SeaweedExplorer.Data.Models.SeeweedClass", b =>
+            modelBuilder.Entity("SeaweedExplorer.Data.Models.SeaweedClass", b =>
                 {
-                    b.Navigation("Seeweeds");
+                    b.Navigation("Seaweeds");
                 });
 #pragma warning restore 612, 618
         }

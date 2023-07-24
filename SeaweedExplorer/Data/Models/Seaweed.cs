@@ -2,7 +2,7 @@
 
 namespace SeaweedExplorer.Data.Models
 {
-    public class SeeweedClass
+    public class Seaweed
     {
         public int Id { get; set; }
         [Required]
@@ -11,8 +11,11 @@ namespace SeaweedExplorer.Data.Models
         [Required]
         [StringLength(200)]
         public string? NameLatin { get; set; }
-
-        public List<Seeweed> Seeweeds { get; set; } = new();
-
+        public bool Native { get; set; }
+        [Required]
+        public int? SeaweedClassId { get; set; }
+        public SeaweedClass? SeaweedClass { get; set; }
+        [Timestamp]
+        public byte[]? Timestamp { get; set; }
     }
 }

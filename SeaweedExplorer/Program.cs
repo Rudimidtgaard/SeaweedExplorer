@@ -7,9 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddDbContextFactory<SeeweedDbContext>(
+builder.Services.AddDbContextFactory<SeaweedDbContext>(
     opt => opt.UseSqlServer(
-        builder.Configuration.GetConnectionString("SeeweedManagerDb")));
+        builder.Configuration.GetConnectionString("SeaweedManagerDb")));
 builder.Services.AddScoped<StateContainer>();
 
 var app = builder.Build();
@@ -20,7 +20,7 @@ await EnsureDatabaseIsMigrated(app.Services);
 async Task EnsureDatabaseIsMigrated(IServiceProvider services)
 {
     using var scope = services.CreateScope();
-    using var ctx = scope.ServiceProvider.GetService<SeeweedDbContext>();
+    using var ctx = scope.ServiceProvider.GetService<SeaweedDbContext>();
     if (ctx is not null)
     {
         await ctx.Database.MigrateAsync();

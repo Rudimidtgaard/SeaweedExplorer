@@ -1,20 +1,20 @@
-﻿@page "/Seeweed/edit/{seeweedId:int}"
-@inject IDbContextFactory<SeeweedDbContext> ContectFactory
+﻿@page "/Seaweed/edit/{seaweedId:int}"
+@inject IDbContextFactory<SeaweedDbContext> ContectFactory
 @inject NavigationManager NavigationManager
 @inject StateContainer StateContainer;
 
-<PageTitle>Edit Seeweed</PageTitle>
+<PageTitle>Edit Seaweed</PageTitle>
 
-<h1>Edit Seeweed</h1>
+<h1>Edit Seaweed</h1>
 
-@if(Seeweed is null && !IsBusy)
+@if(Seaweed is null && !IsBusy)
 {
-    <div class="alert alert-danger">Seeweed with Id @SeeweedId was not found.</div>
+    <div class="alert alert-danger">Seaweed with Id @SeaweedId was not found.</div>
 }
 else
 {
-    <SeeweedForm Seeweed="@Seeweed"
-        SeeweedClasses="@SeeweedClasses"
+    <SeaweedForm Seaweed="@Seaweed"
+        SeaweedClasses="@SeaweedClasses"
         IsEdit="true"
         IsBusy="@IsBusy"
         OnSubmit="@HandleSubmit"
@@ -29,10 +29,10 @@ else
 
 @code {
     [Parameter]
-    public int SeeweedId { get; set; }
+    public int SeaweedId { get; set; }
 
-    private Seeweed? Seeweed { get; set; }
-    private SeeweedClass[]? SeeweedClasses { get; set; }
+    private Seaweed? Seaweed { get; set; }
+    private SeaweedClass[]? SeaweedClasses { get; set; }
 
     private bool IsBusy { get; set; }
     private string? ErrorMessage { get; set; }
@@ -45,14 +45,14 @@ else
         {
             using var context = ContectFactory.CreateDbContext();
 
-            SeeweedClasses = await context.SeeweedClass
+            SeaweedClasses = await context.SeaweedClass
                         .AsNoTracking()
                         .OrderBy(cla => cla.NameCommon)
                         .ToArrayAsync();
 
-            Seeweed = await context.Seeweed
+            Seaweed = await context.Seaweed
                         .AsNoTracking()
-                        .FirstOrDefaultAsync(sw => sw.Id == SeeweedId);
+                        .FirstOrDefaultAsync(sw => sw.Id == SeaweedId);
         }
         finally
         {
@@ -62,7 +62,7 @@ else
 
     private async Task HandleSubmit(bool isValid)
     {
-        if(Seeweed is null || IsBusy || !isValid)
+        if(Seaweed is null || IsBusy || !isValid)
         {
             ErrorMessage = null;
             return;
@@ -73,18 +73,18 @@ else
         try
         {
             using var context = ContectFactory.CreateDbContext();
-            context.Update(Seeweed);
+            context.Update(Seaweed);
             await context.SaveChangesAsync();
 
             NavigateToOverviewPage();
         }
         catch(DbUpdateConcurrencyException)
         {
-            ErrorMessage = "This seeweed was modified by another user. Reload page and try again";
+            ErrorMessage = "This seaweed was modified by another user. Reload page and try again";
         }
         catch(Exception e)
         {
-            ErrorMessage = $"Error while saving seeweed. Error message: {e.Message}";
+            ErrorMessage = $"Error while saving seaweed. Error message: {e.Message}";
         }
         finally
         {
@@ -94,6 +94,6 @@ else
 
     private void NavigateToOverviewPage()
     {
-        NavigationManager.NavigateTo($"/seeweed/list/{StateContainer.SeeweedOverviewPage}");
+        NavigationManager.NavigateTo($"/seaweed/list/{StateContainer.SeaweedOverviewPage}");
     }
 }

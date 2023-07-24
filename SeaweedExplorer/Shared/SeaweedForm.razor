@@ -1,6 +1,6 @@
-﻿@if (Seeweed is not null)
+﻿@if (Seaweed is not null)
 {
-    <EditForm Model="@Seeweed" OnValidSubmit="@HandleValidSubmit"
+    <EditForm Model="@Seaweed" OnValidSubmit="@HandleValidSubmit"
           OnInvalidSubmit="@HandleInvalidSubmit">
         <DataAnnotationsValidator />
         <ValidationSummary />
@@ -8,26 +8,26 @@
         <div class="mb-3">
             <label for="NameCommon" class="form-label">Common Name</label>
             <InputText id="NameCommon" class="form-control"
-                   @bind-Value="Seeweed.NameCommon"></InputText>
-            <ValidationMessage For="() => Seeweed.NameCommon" />
+                   @bind-Value="Seaweed.NameCommon"></InputText>
+            <ValidationMessage For="() => Seaweed.NameCommon" />
         </div>
 
         <div class="mb-3">
             <label for="NameLatin" class="form-label">Latin Name</label>
             <InputText id="NameLatin" class="form-control"
-                   @bind-Value="Seeweed.NameLatin"></InputText>
-            <ValidationMessage For="() => Seeweed.NameLatin" />
+                   @bind-Value="Seaweed.NameLatin"></InputText>
+            <ValidationMessage For="() => Seaweed.NameLatin" />
         </div>
 
         <div class="mb-3">
             <label for="class" class="form-label">Class</label>
             <InputSelect id="class" class="form-select"
-                     @bind-Value="Seeweed.SeeweedClassId">
-                @if (SeeweedClasses is not null)
+                     @bind-Value="Seaweed.SeaweedClassId">
+                @if (SeaweedClasses is not null)
                 {
-                    @foreach (var seeweedClass in SeeweedClasses)
+                    @foreach (var seaweedClass in SeaweedClasses)
                     {
-                        <option value="@seeweedClass.Id">@seeweedClass.NameCommon</option>
+                        <option value="@seaweedClass.Id">@seaweedClass.NameCommon</option>
                     }
 
                 }
@@ -37,7 +37,7 @@
         <div class="mb-3">
             <label for="isNative" class="form-label">Native</label>
             <InputCheckbox id="isNative" class="form-check-input"
-                       @bind-Value="Seeweed.Native"></InputCheckbox>
+                       @bind-Value="Seaweed.Native"></InputCheckbox>
         </div>
 
         @if(IsEdit)
@@ -57,9 +57,9 @@
 
 @code {
     [Parameter]
-    public Seeweed? Seeweed { get; set; }
+    public Seaweed? Seaweed { get; set; }
     [Parameter]
-    public SeeweedClass[]? SeeweedClasses { get; set; }
+    public SeaweedClass[]? SeaweedClasses { get; set; }
     [Parameter]
     public bool IsBusy { get; set; }
     [Parameter]

@@ -1,13 +1,13 @@
-﻿@page "/seeweed/add"
-@inject IDbContextFactory<SeeweedDbContext> ContextFactory
+﻿@page "/seaweed/add"
+@inject IDbContextFactory<SeaweedDbContext> ContextFactory
 
-<PageTitle>Add Seeweed</PageTitle>
+<PageTitle>Add Seaweed</PageTitle>
 
-<h1>Add Seeweed</h1>
+<h1>Add Seaweed</h1>
 
-<SeeweedForm 
-    Seeweed="@Seeweed"
-    SeeweedClasses="@SeeweedClasses"
+<SeaweedForm 
+    Seaweed="@Seaweed"
+    SeaweedClasses="@SeaweedClasses"
     IsBusy ="@IsBusy"
     OnSubmit="@HandleSubmit"/>
 
@@ -23,9 +23,9 @@
 }
 
 @code {
-    private Seeweed? Seeweed { get; set; }
+    private Seaweed? Seaweed { get; set; }
 
-    private SeeweedClass[]? SeeweedClasses { get; set; }
+    private SeaweedClass[]? SeaweedClasses { get; set; }
 
     private bool IsBusy { get; set; }
 
@@ -38,13 +38,13 @@
     {
         using var context = ContextFactory.CreateDbContext();
 
-        SeeweedClasses = await context.SeeweedClass
+        SeaweedClasses = await context.SeaweedClass
                                 .OrderBy(c => c.NameCommon)
                                 .ToArrayAsync();
 
-        Seeweed = new()
+        Seaweed = new()
         {
-                SeeweedClassId = SeeweedClasses.FirstOrDefault()?.Id
+                SeaweedClassId = SeaweedClasses.FirstOrDefault()?.Id
         };
 
     }
@@ -68,34 +68,32 @@
 
         try
         {
-            if (Seeweed is not null)
+            if (Seaweed is not null)
             {
                 using var context = ContextFactory.CreateDbContext();
 
-                context.Seeweed.Add(Seeweed);
+                context.Seaweed.Add(Seaweed);
                 await context.SaveChangesAsync();
 
-                SuccessMessage = $"Seeweed: {Seeweed.NameCommon} was added successfully.";
+                SuccessMessage = $"Seaweed: {Seaweed.NameCommon} was added successfully.";
                 ErrorMessage = null;
 
-                // New Seeweed for next creation
-                Seeweed = new()
+                // New Seaweed for next creation
+                Seaweed = new()
                 {
-                        SeeweedClassId = Seeweed.SeeweedClassId
+                        SeaweedClassId = Seaweed.SeaweedClassId
                 };
             }
         }
         catch (Exception e)
         {
             SuccessMessage = null;
-            ErrorMessage = $"Error while adding seeweed. Error message: {e.Message}";
+            ErrorMessage = $"Error while adding seaweed. Error message: {e.Message}";
         }
         finally
         {
             IsBusy = false;
         }
-
-
     }
 
     private void HandleInvalidSubmit()
